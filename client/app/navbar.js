@@ -36,7 +36,7 @@ const Navbar = () => {
                     <p className="text-black hover:underline opacity-80">Explore</p>
                     <p className="text-black hover:underline opacity-80">Your Collection</p>
                     <p className="text-black hover:underline opacity-80">Create</p>
-                    <button className="text-black bg-white text-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40 hover:bg-black">Connect Wallet</button>
+                    <button className="text-black bg-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40 hover:bg-black">Connect Wallet</button>
                 </div>
             )}
         </div>
