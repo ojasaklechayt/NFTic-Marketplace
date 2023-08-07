@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link';
 import { useState } from 'react';
 
 const Navbar = () => {
@@ -12,10 +13,10 @@ const Navbar = () => {
         <div>
             <div className="px-5 md:bg-[#D9D9D9] md:bg-opacity-20 h-[50px] flex flex-row items-center relative">
                 <div className="hidden md:flex flex-row space-x-10 lg:space-x-20 cursor-pointer">
-                    <p className="hover:underline opacity-80">Home</p>
-                    <p className="hover:underline opacity-80">Explore</p>
-                    <p className="hover:underline opacity-80">Your Collection</p>
-                    <p className="hover:underline opacity-80">Create</p>
+                    <Link href="/"><p className="hover:underline opacity-80">Home</p></Link>
+                    <Link href="/Explore"><p className="hover:underline opacity-80">Explore</p></Link>
+                    <Link href="/Collection"><p className="hover:underline opacity-80">Your Collection</p></Link>
+                    <Link href="/Create"><p className="hover:underline opacity-80">Create</p></Link>
                 </div>
                 <div className="hidden md:block ml-auto">
                     <button className="bg-white text-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40 hover:bg-black">Connect Wallet</button>
@@ -32,11 +33,11 @@ const Navbar = () => {
             {/* Hamburger Menu */}
             {isMenuOpen && (
                 <div className="md:hidden absolute right-0 top-14 mr-5 bg-[#D9D9D9] p-4 rounded-lg shadow-lg space-y-2">
-                    <p className="text-black hover:underline opacity-80">Home</p>
-                    <p className="text-black hover:underline opacity-80">Explore</p>
-                    <p className="text-black hover:underline opacity-80">Your Collection</p>
-                    <p className="text-black hover:underline opacity-80">Create</p>
-                    <button className="text-black bg-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40 hover:bg-black">Connect Wallet</button>
+                    <Link href="/"><p className="text-black hover:underline opacity-80">Home</p></Link>
+                    <Link href="/Explore"><p className="text-black hover:underline opacity-80">Explore</p></Link>
+                    <Link href="/Collection"><p className="text-black hover:underline opacity-80">Your Collection</p></Link>
+                    <Link href="/Create"><p className="text-black hover:underline opacity-80">Create</p></Link>
+                    <button className="text-black bg-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40">Connect Wallet</button>
                 </div>
             )}
         </div>
