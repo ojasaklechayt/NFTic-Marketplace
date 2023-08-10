@@ -15,7 +15,7 @@
     "autoprefixer": "10.4.14",
     "bufferutil": "^4.0.7",
     "encoding": "^0.1.13",
-    "ethers": "^6.7.0",
+    "ethers": "^5.7.2",
     "lokijs": "^1.5.12",
     "next": "13.4.12",
     "node-fetch": "^3.3.2",
