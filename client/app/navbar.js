@@ -1,28 +1,78 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import the useRouter hook
 import { ethers } from 'ethers';
 
 const Navbar = () => {
+    const router = useRouter(); // Initialize the router
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [account, setAccount] = useState('Connect Wallet');
+    const [ethereum, setEthereum] = useState(null);
+    const [provider, setProvider] = useState(null);
+
+    const handleWalletLockedRedirection = () => {
+        const currentPath = router.pathname;
+        if (currentPath === '/Collection' || currentPath === '/Create') {
+            router.push('/');
+        } else {
+            window.location.reload();
+        }
+    };
+
+    useEffect(() => {
+        const initializeEthereum = async () => {
+            if (window.ethereum) {
+                setEthereum(window.ethereum);
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                setProvider(provider);
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        setAccount(`${accounts[0].slice(0, 5)}...${accounts[0].slice(-3)}`);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+
+                // Listen for Metamask account changes
+                window.ethereum.on('accountsChanged', handleAccountsChanged);
+            }
+        };
+
+        initializeEthereum();
+
+        return () => {
+            if (ethereum) {
+                ethereum.removeAllListeners('accountsChanged', handleAccountsChanged);
+            }
+        };
+    }, []);
+
+    const handleAccountsChanged = (accounts) => {
+        if (accounts.length > 0) {
+            setAccount(`${accounts[0].slice(0, 5)}...${accounts[0].slice(-3)}`);
+        } else {
+            setAccount('Connect Wallet');
+
+            handleWalletLockedRedirection();
+        }
+        // Reload the page when Metamask gets locked
+    };
+
 
     const connectWallet = async () => {
         try {
-            const { ethereum } = window;
-            const accounts = await ethereum.request({
-                method: "eth_requestAccounts",
-            });
-
-            ethereum.on("accountsChanged", () => {
-                window.location.reload();
-            });
-
-            setAccount(accounts[0]);
-            const provider = new ethers.providers.Web3Provider(ethereum);
-            const signer = provider.getSigner();
-
-            // You can use the 'signer' to interact with the blockchain
+            if (ethereum) {
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                if (accounts.length > 0) {
+                    setAccount(`${accounts[0].slice(0, 5)}...${accounts[0].slice(-3)}`);
+                } else {
+                    setAccount('Connect Wallet');
+                    handleWalletLockedRedirection();
+                }
+            }
         } catch (error) {
             console.log(error);
         }
