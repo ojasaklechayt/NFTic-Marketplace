@@ -1,4 +1,4 @@
-'use clien'
+'use client'
 import Image from "next/image";
 import Navbar from "./navbar";
 import Cat from "../public/cat.png";
