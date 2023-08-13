@@ -7,7 +7,7 @@ import { arbitrum, mainnet, polygon } from 'wagmi/chains'
 import { metadata } from './metadata';
 
 const chains = [arbitrum, mainnet, polygon]
-const projectId = '0ac2dfebf04b585872a69ef495846553'
+const projectId = process.env.WEB3PRODUCTID;
 
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiConfig = createConfig({

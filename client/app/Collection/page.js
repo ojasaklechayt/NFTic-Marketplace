@@ -1,5 +1,5 @@
 'use client'
-import { React, useState } from 'react'
+import { React, useState, useRef } from 'react'
 import Navbar from '../navbar'
 
 const Data = {
@@ -74,6 +74,7 @@ const chunkData = (data, size) => {
 
 const Collection = () => {
     const [showListed, setShowListed] = useState(false);
+    const [showAmountCard, setShowAmountCard] = useState(null);
 
     const filterData = showListed
         ? Object.keys(Data)
@@ -83,8 +84,16 @@ const Collection = () => {
 
     const rowData = chunkData(filterData, 4);
 
+    const popupRef = useRef();
+
+    const handlePopupClick = (event) => {
+        if (popupRef.current && !popupRef.current.contains(event.target)) {
+            setShowAmountCard(null);
+        }
+    };
+
     return (
-        <div>
+        <div onClick={handlePopupClick}>
             <Navbar />
             <div>
                 <h1 className="text-3xl md:text-6xl text-center mt-20">Your Collection</h1>
@@ -125,9 +134,33 @@ const Collection = () => {
                                         <p>{card.Price} ETH</p>
                                         <p>{card.Address}</p>
                                     </div>
-                                    <div className="bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white">
+                                    <div
+                                        className={`bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white ${card.Type === "List" ? 'hover:cursor-pointer' : ''}`}
+                                        onClick={() => card.Type === "List" && setShowAmountCard(card.Name)}
+                                    >
                                         <p className="py-3 text-2xl">{card.Type}</p>
                                     </div>
+                                    {card.Type === "List" && showAmountCard === card.Name && (
+                                        <div ref={popupRef} className="amount-popup fixed top-0 left-0 flex justify-center items-center w-full h-full backdrop-blur-sm">
+                                            <div className="bg-gray-100 p-4 rounded-lg">
+                                                <div className='mb-5 flex flex-row justify-end'>
+                                                    <button
+                                                        className='text-xl py-1 px-2 rounded-lg hover:bg-gray-300'
+                                                        onClick={() => setShowAmountCard(null)}
+                                                    >
+                                                        &#10005;
+                                                    </button>
+                                                </div>
+                                                <div className='flex flex-row'>
+                                                    <p className='text-md md:text-lg py-1 px-2 md:py-2 md:px-5 rounded-tl-lg rounded-bl-lg text-black bg-gray-500 bg-opacity-80'>Enter Amount</p>
+                                                    <input className='py-1 px-2 w-[110px] md:py-2 md:px-3 md:w-[210px] rounded-tr-lg bg-gray-300 rounded-br-lg bg-white bg-opacity-60' type='text' />
+                                                </div>
+                                                <button className='mt-5 py-3 px-8 bg-gray-200 hover:bg-gray-400 text-black font-[1.5rem] rounded-lg'>
+                                                    List
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

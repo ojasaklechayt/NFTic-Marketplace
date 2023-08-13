@@ -34,10 +34,6 @@ const Create = () => {
                         <p className='text-lg py-1 px-1 md:py-2 md:px-5 rounded-tl-lg rounded-bl-lg text-black bg-white bg-opacity-80'>Enter NFT Name</p>
                         <input className='py-1 px-1 w-[100px] md:py-2 md:px-1 md:w-[200px] rounded-tr-lg rounded-br-lg bg-white bg-opacity-60' type='text' />
                     </div>
-                    <div className='flex flex-row'>
-                        <p className='text-lg py-1 px-2 md:py-2 md:px-5 rounded-tl-lg rounded-bl-lg text-black bg-white bg-opacity-80'>Enter Amount</p>
-                        <input className='py-1 px-2 w-[110px] md:py-2 md:px-3 md:w-[210px] rounded-tr-lg rounded-br-lg bg-white bg-opacity-60' type='text' />
-                    </div>
                     <button className='py-3 px-8 bg-white bg-opacity-80 hover:bg-opacity-100 text-black font-[1.5rem] rounded-lg'>
                         Mint
                     </button>
