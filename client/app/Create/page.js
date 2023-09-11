@@ -26,9 +26,7 @@ const Create = () => {
     const { uploadToIPFS, createNFT } = useContext(BlockchainConfig);
 
     useEffect(() => {
-
-        if (!walletConnected) {
-
+        if (typeof window !== 'undefined' && !walletConnected) {
             web3ModalRef.current = new Web3Modal({
                 network: "sepolia",
                 providerOptions: {},

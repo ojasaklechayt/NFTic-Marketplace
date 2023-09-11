@@ -19,8 +19,8 @@ export const BlockchainProvider = ({ children }) => {
     const NFT_STORAGE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGY2ODk3NkI1Nzk0M0MwMWFFNTU3OTBEMjg0NWI1NzMyOEMxQTc1RTYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5Mzk5OTAxMzMyNCwibmFtZSI6Ik5GVGljIE1hcmtldHBsYWNlIn0.bWU9yn_DF-zqb-5k9toHERUhrQDqwm72nl_iOCdp9Ks"
     const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
 
-    const provider = new eth.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+    // const provider = new eth.providers.Web3Provider(window.ethereum);
+    // const signer = provider.getSigner();
     // const contract = new eth.Contract(contr_addr, abi, signer);
 
 
