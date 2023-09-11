@@ -1,28 +1,18 @@
-'use client'
 import './globals.css';
-import { Web3Modal } from '@web3modal/react';
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { arbitrum, mainnet, polygon } from 'wagmi/chains'
 import { metadata } from './metadata';
-
-const chains = [arbitrum, mainnet, polygon]
-const projectId = process.env.WEB3PRODUCTID;
-
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
-  publicClient
-})
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+import { BlockchainProvider } from './Context/AppConfig';
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Your Page Title</title>
+        <link rel="stylesheet" href="your-stylesheet.css" />
+      </head>
       <body>
-      <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+        <BlockchainProvider>{children}</BlockchainProvider>
       </body>
     </html>
   );

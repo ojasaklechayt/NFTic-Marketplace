@@ -31,6 +31,7 @@ const Navbar = () => {
                     const accounts = await window.ethereum.request({ method: 'eth_accounts' });
                     if (accounts.length > 0) {
                         setAccount(`${accounts[0].slice(0, 5)}...${accounts[0].slice(-3)}`);
+                        console.log(account);
                     }
                 } catch (error) {
                     console.log(error);
