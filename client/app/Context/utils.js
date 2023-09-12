@@ -521,3 +521,4 @@ export const abi = [
         "type": "function"
     }
 ]
+export const nftstoract = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGY2ODk3NkI1Nzk0M0MwMWFFNTU3OTBEMjg0NWI1NzMyOEMxQTc1RTYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5Mzk5OTAxMzMyNCwibmFtZSI6Ik5GVGljIE1hcmtldHBsYWNlIn0.bWU9yn_DF-zqb-5k9toHERUhrQDqwm72nl_iOCdp9Ks"; 

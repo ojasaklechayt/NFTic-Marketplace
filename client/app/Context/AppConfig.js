@@ -4,7 +4,7 @@ import Web3Modal from "web3modal";
 import * as eth from "ethers";
 import { NFTStorage, Blob } from "nft.storage";
 import { Contract } from "ethers";
-import { abi } from './utils'
+import { abi, address, nftstoract } from './utils'
 import mime from 'mime'
 
 
@@ -12,38 +12,46 @@ export const BlockchainConfig = React.createContext();
 
 export const BlockchainProvider = ({ children }) => {
 
-    // const [currentAccount, setCurrentAccount] = useState("");
+    const [currentAccount, setCurrentAccount] = useState("Connect Wallet");
+    const [errorMessage, setErrorMessage] = useState(null);
 
 
-    const contr_addr = process.env.ADDRESS_DEPLOYED_TO;
-    const NFT_STORAGE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGY2ODk3NkI1Nzk0M0MwMWFFNTU3OTBEMjg0NWI1NzMyOEMxQTc1RTYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5Mzk5OTAxMzMyNCwibmFtZSI6Ik5GVGljIE1hcmtldHBsYWNlIn0.bWU9yn_DF-zqb-5k9toHERUhrQDqwm72nl_iOCdp9Ks"
+    const contr_addr = address;
+    const NFT_STORAGE_TOKEN = nftstoract;
     const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+    let provider, signer, contract;
+    if (typeof window !== "undefined" && window.ethereum) {
+        provider = new eth.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        contract = new eth.Contract(contr_addr, abi, signer);
+    }
 
     // const provider = new eth.providers.Web3Provider(window.ethereum);
     // const signer = provider.getSigner();
     // const contract = new eth.Contract(contr_addr, abi, signer);
+    const connectWallet = async () => {
+        try {
+            if (!window.ethereum) {
+                window.alert("Please install MetaMask.");
+            }
 
+            const accounts = await window.ethereum.request({
+                method: "eth_requestAccounts",
+            });
 
-    // const connectWallet = async () => {
-    //     if (!window.ethereum) return alert("Please install MetaMask.");
-    //     const accounts = await window.ethereum.request({ //ethereum is a property that represents the Ethereum provider (like MetaMask)
-    //         method: "eth_requestAccounts",
-    //     });
-    //     console.log("Connected")
-    //     setCurrentAccount(accounts[0]);
-    //     window.location.reload(); // ensures that other parts of the application are aware of the newly connected Ethereum account.
-    // };
+            setCurrentAccount(accounts[0]);
 
-    // const checkIfWalletIsConnect = async () => {
-    //     if (!window.ethereum) return alert("Please install MetaMask.");
-    //     const accounts = await window.ethereum.request({ method: "eth_accounts" });
-    //     if (accounts.length) {
-    //         setCurrentAccount(accounts[0]);
-    //         console.log("Connected")
-    //     } else {
-    //         console.log("No accounts found");
-    //     }
-    // };
+            window.ethereum.on("accountsChanged", (newAccounts) => {
+                if (newAccounts.length === 0) {
+                    setCurrentAccount("Connect Wallet");
+                }
+            });
+
+        } catch (error) {
+            console.error(`Error connecting wallet: ${error.message}`);
+            setErrorMessage(error.message);
+        }
+    }
 
     const uploadToIPFS = async (file) => {
         // console.log(file);
@@ -58,7 +66,6 @@ export const BlockchainProvider = ({ children }) => {
             });
             if (metadata && metadata.data && metadata.data.image instanceof URL) {
                 const imageUrl = metadata.data.image.href;
-                window.alert(imageUrl);
                 return imageUrl;
             } else {
                 console.error("Metadata or image is undefined:", metadata);
@@ -84,30 +91,21 @@ export const BlockchainProvider = ({ children }) => {
             const metadataBlob = new Blob([JSON.stringify(metadata)], { type: "application/json" });
             const cid = await client.storeBlob(metadataBlob);
             url = "https://ipfs.io/ipfs/" + cid;
-            console.log(url);
+            await mintNFT(url);
         } catch (error) {
             console.log("Error uploading to create nft", error);
         }
-        return fileUrl;
+        window.alert("NFT Created Successfully!!");
     };
 
-    // const createSale = async (url, formInputPrice) => {
-    //     const price = eth.utils.parseUnits(formInputPrice, "ether");
-    //     console.log(price)
-    //     try {
-    //         const listingPrice = await contract.getListingPrice(); // fees charged by the marketplace to allow ppl upload the nft
-    //         console.log("Listing price - ", listingPrice)
-    //         const transaction = await contract.createToken(url, price, {
-    //             value: listingPrice.toString(),
-    //         })
-    //         console.log(transaction)
-    //         await transaction.wait();
-    //         console.log(transaction);
+    const mintNFT = async (url) => {
+        try {
+            const transaction = await contract.createNFT(url);
+        } catch (error) {
+            console.error("There's error minting the NFTs : ", error);
+        }
+    };
 
-    //     } catch (error) {
-    //         console.log("An error occured at the create sale function - ", error)
-    //     }
-    // };
 
     // const fetchNFTs = async (setLoading) => {
     //     setLoading(true);
@@ -145,6 +143,6 @@ export const BlockchainProvider = ({ children }) => {
     //     checkIfWalletIsConnect();
     // }, []);
     return (
-        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT }}>{children}</BlockchainConfig.Provider>
+        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT, connectWallet, mintNFT, currentAccount }}>{children}</BlockchainConfig.Provider>
     );
 };

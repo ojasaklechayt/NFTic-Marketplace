@@ -1,83 +1,25 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // Import the useRouter hook
+import { useRouter } from 'next/navigation';
 import { ethers } from 'ethers';
+import { BlockchainConfig } from './Context/AppConfig';
 
 const Navbar = () => {
-    const router = useRouter(); // Initialize the router
+    const router = useRouter();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [account, setAccount] = useState('Connect Wallet');
     const [ethereum, setEthereum] = useState(null);
     const [provider, setProvider] = useState(null);
-
-    const handleWalletLockedRedirection = () => {
-        const currentPath = router.pathname;
-        if (currentPath === '/Collection' || currentPath === '/Create') {
-            router.push('/');
-        } else {
-            window.location.reload();
-        }
-    };
+    const { connectWallet, currentAccount } = useContext(BlockchainConfig);
 
     useEffect(() => {
-        const initializeEthereum = async () => {
-            if (window.ethereum) {
-                setEthereum(window.ethereum);
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                setProvider(provider);
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                    if (accounts.length > 0) {
-                        setAccount(`${accounts[0].slice(0, 5)}...${accounts[0].slice(-3)}`);
-                        console.log(account);
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-
-                // Listen for Metamask account changes
-                window.ethereum.on('accountsChanged', handleAccountsChanged);
-            }
-        };
-
-        initializeEthereum();
-
-        return () => {
-            if (ethereum) {
-                ethereum.removeAllListeners('accountsChanged', handleAccountsChanged);
-            }
-        };
-    }, []);
-
-    const handleAccountsChanged = (accounts) => {
-        if (accounts.length > 0) {
-            setAccount(`${accounts[0].slice(0, 5)}...${accounts[0].slice(-3)}`);
-        } else {
-            setAccount('Connect Wallet');
-
-            handleWalletLockedRedirection();
+        connectWallet();
+        if(!currentAccount){
+            window.location.reload();
         }
-        // Reload the page when Metamask gets locked
-    };
-
-
-    const connectWallet = async () => {
-        try {
-            if (ethereum) {
-                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                if (accounts.length > 0) {
-                    setAccount(`${accounts[0].slice(0, 5)}...${accounts[0].slice(-3)}`);
-                } else {
-                    setAccount('Connect Wallet');
-                    handleWalletLockedRedirection();
-                }
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    },[]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -89,7 +31,7 @@ const Navbar = () => {
                 <div className="hidden md:flex flex-row space-x-10 lg:space-x-20 cursor-pointer">
                     <Link href="/"><p className="hover:underline opacity-80">Home</p></Link>
                     <Link href="/Explore"><p className="hover:underline opacity-80">Explore</p></Link>
-                    {account !== 'Connect Wallet' && (
+                    {currentAccount !== 'Connect Wallet' && (
                         <>
                             <Link href="/Collection"><p className="hover:underline opacity-80">Your Collection</p></Link>
                             <Link href="/Create"><p className="hover:underline opacity-80">Create</p></Link>
@@ -97,11 +39,11 @@ const Navbar = () => {
                     )}
                 </div>
                 <div className="hidden ml-auto md:block">
-                    <button onClick={connectWallet} className="text-black bg-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40">
+                    <button  onClick={connectWallet} className="text-black bg-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40">
                         <p>
-                            {account === "Connect Wallet"
+                            {currentAccount === "Connect Wallet"
                                 ? 'Connect Wallet'
-                                : `${account.slice(0, 5)}...${account.slice(account.length - 3)}`}
+                                : `${currentAccount.slice(0, 5)}...${currentAccount.slice(currentAccount.length - 5)}`}
                         </p>
                     </button>
                 </div>
@@ -118,7 +60,7 @@ const Navbar = () => {
                 <div className="md:hidden absolute right-0 top-14 mr-5 bg-[#D9D9D9] p-4 rounded-lg shadow-lg space-y-2">
                     <Link href="/"><p className="text-black hover:underline opacity-80 mb-2">Home</p></Link>
                     <Link href="/Explore"><p className="text-black hover:underline opacity-80 mb-2">Explore</p></Link>
-                    {account !== 'Connect Wallet' && (
+                    {currentAccount !== 'Connect Wallet' && (
                         <>
                             <Link href="/Collection"><p className="text-black hover:underline opacity-80 mb-2">Your Collection</p></Link>
                             <Link href="/Create"><p className="text-black hover:underline opacity-80 mb-2">Create</p></Link>
@@ -126,9 +68,9 @@ const Navbar = () => {
                     )}
                     <button onClick={connectWallet} className="text-black bg-white text-sm font-bold p-[8px] rounded-lg bg-opacity-40">
                         <p>
-                            {account === "Connect Wallet"
+                            {currentAccount === "Connect Wallet"
                                 ? 'Connect Wallet'
-                                : `${account.slice(0, 5)}...${account.slice(account.length - 3)}`}
+                                : `${currentAccount.slice(0, 5)}...${currentAccount.slice(currentAccount.length - 5)}`}
                         </p>
                     </button>
                 </div>
