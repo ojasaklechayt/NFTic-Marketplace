@@ -33,3 +33,39 @@ h1 {
 h3{
   font-family: 'Sarpanch', sans-serif;
 }
+
+@keyframes blink {
+  0%, 100% {
+      opacity: 1;
+  }
+  50% {
+      opacity: 0;
+  }
+}
+
+@keyframes dots {
+  0% {
+      content: "";
+  }
+  25% {
+      content: ".";
+  }
+  50% {
+      content: "..";
+  }
+  75% {
+      content: "...";
+  }
+}
+
+.animate-blink {
+  animation: blink 2s infinite;
+}
+
+.animate-dots::after {
+  content: "";
+  animation: dots 3s steps(4, end) infinite;
+  display: inline-block;
+  width: 1em;
+  text-align: left;
+}

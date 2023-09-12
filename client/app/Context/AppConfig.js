@@ -14,6 +14,7 @@ export const BlockchainProvider = ({ children }) => {
 
     const [currentAccount, setCurrentAccount] = useState("Connect Wallet");
     const [errorMessage, setErrorMessage] = useState(null);
+    const [mintingNFT, setMintingNFT] = useState("Minted");
 
 
     const contr_addr = address;
@@ -26,9 +27,6 @@ export const BlockchainProvider = ({ children }) => {
         contract = new eth.Contract(contr_addr, abi, signer);
     }
 
-    // const provider = new eth.providers.Web3Provider(window.ethereum);
-    // const signer = provider.getSigner();
-    // const contract = new eth.Contract(contr_addr, abi, signer);
     const connectWallet = async () => {
         try {
             if (!window.ethereum) {
@@ -75,13 +73,16 @@ export const BlockchainProvider = ({ children }) => {
         }
     };
 
-    const createNFT = async (formInput, fileUrl) => {
-        console.log(fileUrl);
+    const createNFT = async (formInput, file) => {
+        // console.log(fileUrl);
+        const imageUrl = await uploadToIPFS(file);
         const { name, videoUrl } = formInput;
-        if (!name || !fileUrl) return;
+        if (!name || !imageUrl){
+            console.error("Name or Image URL missing");
+        }
         const metadata = JSON.stringify({
             name,
-            image: fileUrl,
+            image: imageUrl,
             properties: {
                 video: videoUrl,
             },
@@ -95,14 +96,18 @@ export const BlockchainProvider = ({ children }) => {
         } catch (error) {
             console.log("Error uploading to create nft", error);
         }
-        window.alert("NFT Created Successfully!!");
     };
 
     const mintNFT = async (url) => {
         try {
+            
             const transaction = await contract.createNFT(url);
+            await transaction.wait();
+            console.log("Transaction confirmed:", transaction.hash);
+            window.alert("NFT Minted Successfully!!");
         } catch (error) {
             console.error("There's error minting the NFTs : ", error);
+            window.alert("NFT not minted , Error!!");
         }
     };
 
@@ -143,6 +148,6 @@ export const BlockchainProvider = ({ children }) => {
     //     checkIfWalletIsConnect();
     // }, []);
     return (
-        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT, connectWallet, mintNFT, currentAccount }}>{children}</BlockchainConfig.Provider>
+        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT, connectWallet, mintNFT, currentAccount, mintingNFT, setMintingNFT }}>{children}</BlockchainConfig.Provider>
     );
 };
