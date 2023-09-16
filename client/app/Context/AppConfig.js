@@ -81,7 +81,7 @@ export const BlockchainProvider = ({ children }) => {
             console.error("Name or Image URL missing");
         }
         const metadata = JSON.stringify({
-            name,
+            name: name,
             image: imageUrl,
             properties: {
                 video: videoUrl,
@@ -91,7 +91,9 @@ export const BlockchainProvider = ({ children }) => {
         try {
             const metadataBlob = new Blob([JSON.stringify(metadata)], { type: "application/json" });
             const cid = await client.storeBlob(metadataBlob);
-            url = "https://ipfs.io/ipfs/" + cid;
+            console.log(cid);
+            url = `https://ipfs.io/ipfs/${cid}`;
+            console.log(url);
             await mintNFT(url);
         } catch (error) {
             console.log("Error uploading to create nft", error);
