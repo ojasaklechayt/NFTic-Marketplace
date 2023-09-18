@@ -1,0 +1,7 @@
+type NFTTransfer @entity{
+  id: ID!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenURI: String! # string
+  price: BigInt! # uint256
+}
