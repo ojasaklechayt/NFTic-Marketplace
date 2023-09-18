@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apollo/client": "^3.8.3",
+    "@apollo/client": "3.8.3",
     "@apollo/react-hooks": "^4.0.0",
+    "@apollographql/apollo-tools": "^0.5.4",
     "@ethersproject/providers": "^5.7.2",
     "@web3modal/ethereum": "^2.7.1",
     "@web3modal/react": "^2.7.1",
@@ -19,7 +20,7 @@
     "bufferutil": "^4.0.7",
     "encoding": "^0.1.13",
     "ethers": "^5.7.2",
-    "graphql": "^16.0.0",
+    "graphql": "16.0.0",
     "lokijs": "^1.5.12",
     "mime": "^3.0.0",
     "next": "13.4.12",
@@ -37,6 +38,6 @@
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "^3.0.0",
-    "apollo": "^2.34.0"
+    "apollo": "^2.11.1"
   }
 }
