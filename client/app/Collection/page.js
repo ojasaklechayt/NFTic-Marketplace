@@ -1,174 +1,144 @@
 'use client'
-import { React, useState, useRef } from 'react'
-import Navbar from '../navbar'
-
-const Data = {
-    card1: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "Unlist"
-    },
-    card2: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "List"
-    },
-    card3: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "List"
-    },
-    card4: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "Unlist"
-    },
-    card5: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "List"
-    },
-    card6: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "List"
-    },
-    card7: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "Unlist"
-    },
-    card8: {
-        Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-        Name: "Nyan Cat",
-        Price: 0.05,
-        Address: "0xA1B...A42",
-        Type: "List"
-    },
-
-}
-
-
-
-const chunkData = (data, size) => {
-    const chunks = [];
-    for (let i = 0; i < data.length; i += size) {
-        chunks.push(data.slice(i, i + size));
-    }
-    return chunks;
-};
+import { useEffect, useState, useRef } from 'react';
+import Navbar from '../navbar';
+import { ethers } from 'ethers';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_DATA } from './collection-query'; // Import your GraphQL query
+import client from '../../apollo-client';
 
 const Collection = () => {
-    const [showListed, setShowListed] = useState(false);
-    const [showAmountCard, setShowAmountCard] = useState(null);
+  const [showListed, setShowListed] = useState(false);
+  const [showAmountCard, setShowAmountCard] = useState(null);
+  const popupRef = useRef();
+  const [ethereumAddress, setEthereumAddress] = useState(null);
+  const [apiData, setApiData] = useState([]); // State variable to hold API data
 
-    const filterData = showListed
-        ? Object.keys(Data)
-            .filter((key) => Data[key].Type === 'List')
-            .map((key) => Data[key])
-        : Object.keys(Data).map((key) => Data[key]);
-
-    const rowData = chunkData(filterData, 4);
-
-    const popupRef = useRef();
-
-    const handlePopupClick = (event) => {
-        if (popupRef.current && !popupRef.current.contains(event.target)) {
-            setShowAmountCard(null);
+  useEffect(() => {
+    async function fetchEthereumAddress() {
+      try {
+        if (window.ethereum) {
+          await window.ethereum.enable();
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const signer = provider.getSigner();
+          const address = await signer.getAddress();
+          setEthereumAddress(address);
+        } else {
+          throw new Error('Ethereum wallet not detected');
         }
-    };
+      } catch (error) {
+        console.error('Error fetching Ethereum address:', error.message);
+      }
+    }
 
-    return (
-        <div onClick={handlePopupClick}>
-            <Navbar />
-            <div>
-                <h1 className="text-3xl md:text-6xl text-center mt-20">Your Collection</h1>
-                <div className="flex flex-row justify-center mt-5 space-x-5">
-                    <button
-                        className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${!showListed ? 'bg-gray-500' : ''
-                            }`}
-                        onClick={() => setShowListed(false)}
-                    >
-                        <p className="text-center lg:text-left">All NFTs</p>
-                    </button>
-                    <button
-                        className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${showListed ? 'bg-gray-500' : ''
-                            }`}
-                        onClick={() => setShowListed(true)}
-                    >
-                        <p className="text-center lg:text-left">Listed NFTs</p>
-                    </button>
-                </div>
+    fetchEthereumAddress();
+  }, []);
 
-                <div className="flex flex-col justify-center mt-10 mb-10">
-                    {rowData.map((row, rowIndex) => (
-                        <div key={rowIndex} className="flex flex-col md:flex-row justify-center items-center space-x-6 md:space-x-4 mb-5">
-                            {row.map((card, cardIndex) => (
-                                <div
-                                    key={cardIndex}
-                                    className={`bg-white text-black text-center flex flex-col w-60 md:w-0 space-y-3 ${cardIndex === 0 ? 'ml-8 md:ml-0 lg:w-1/4' : 'lg:w-1/6'
-                                        } rounded-lg mx-2 my-2 md:mx-0 md:my-0`}
-                                    style={{ flex: '0 0 20%', minWidth: '50px' }}
-                                >
-                                    <img
-                                        className="h-40 md:h-[25vh] w-full rounded-tl-lg rounded-tr-lg"
-                                        src={card.Image}
-                                        alt="Image"
-                                    />
-                                    <h2 className="font-bold text-xl md:text-2xl">{card.Name}</h2>
-                                    <div className="flex flex-row justify-center space-x-4">
-                                        <p>{card.Price} ETH</p>
-                                        <p>{card.Address}</p>
-                                    </div>
-                                    <div
-                                        className={`bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white ${card.Type === "List" ? 'hover:cursor-pointer' : ''}`}
-                                        onClick={() => card.Type === "List" && setShowAmountCard(card.Name)}
-                                    >
-                                        <p className="py-3 text-2xl">{card.Type}</p>
-                                    </div>
-                                    {card.Type === "List" && showAmountCard === card.Name && (
-                                        <div ref={popupRef} className="amount-popup fixed top-0 left-0 flex justify-center items-center w-full h-full backdrop-blur-sm">
-                                            <div className="bg-gray-100 p-4 rounded-lg">
-                                                <div className='mb-5 flex flex-row justify-end'>
-                                                    <button
-                                                        className='text-xl py-1 px-2 rounded-lg hover:bg-gray-300'
-                                                        onClick={() => setShowAmountCard(null)}
-                                                    >
-                                                        &#10005;
-                                                    </button>
-                                                </div>
-                                                <div className='flex flex-row'>
-                                                    <p className='text-md md:text-lg py-1 px-2 md:py-2 md:px-5 rounded-tl-lg rounded-bl-lg text-black bg-gray-500 bg-opacity-80'>Enter Amount</p>
-                                                    <input className='py-1 px-2 w-[110px] md:py-2 md:px-3 md:w-[210px] rounded-tr-lg bg-gray-300 rounded-br-lg bg-white bg-opacity-60' type='text' />
-                                                </div>
-                                                <button className='mt-5 py-3 px-8 bg-gray-200 hover:bg-gray-400 text-black font-[1.5rem] rounded-lg'>
-                                                    List
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            </div>
+  const { loading, error, data } = useQuery(GET_DATA, {
+    client,
+    variables: { owner: ethereumAddress },
+  });
+
+  // Handle loading and error states
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  // Extract NFTs data from the GraphQL response
+  console.log(data);
+  const nftTransfers = data.nfttransfers;
+  console.log(nftTransfers);
+
+  // Function to fetch data from the API and update 'apiData' state
+  const handlePopupClick = async () => {
+    try {
+      // Make an API request using a library like Axios
+      const response = await fetch('your_api_endpoint_here');
+      if (!response.ok) {
+        throw new Error('Failed to fetch data from the API');
+      }
+      const data = await response.json();
+      console.log(data);
+      // Update the 'apiData' state with the fetched data
+      setApiData(data);
+
+    } catch (error) {
+      console.error('Error fetching data from the API:', error.message);
+    }
+  };
+
+  return (
+    <div>
+      <Navbar />
+      <div>
+        <h1 className="text-3xl md:text-6xl text-center mt-20">Your Collection</h1>
+        <div className="flex flex-row justify-center mt-5 space-x-5">
+          <button
+            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${!showListed ? 'bg-gray-500' : ''}`}
+            onClick={() => setShowListed(false)}
+          >
+            <p className="text-center lg:text-left">All NFTs</p>
+          </button>
+          <button
+            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${showListed ? 'bg-gray-500' : ''}`}
+            onClick={() => setShowListed(true)}
+          >
+            <p className="text-center lg:text-left">Listed NFTs</p>
+          </button>
         </div>
-    );
+
+        <div className="flex flex-col justify-center mt-10 mb-10">
+          {nftTransfers.map((nft, index) => (
+            <div key={index} className="flex flex-col md:flex-row justify-center items-center space-x-6 md:space-x-4 mb-5 rounded-lg">
+              {/* Render NFT cards using 'nft' data */}
+              <div
+                className={`bg-white text-black text-center flex flex-col w-60 md:w-0 space-y-3 rounded-lg ${index === 0 ? 'ml-8 md:ml-0 lg:w-1/4' : 'lg:w-1/6'}`}
+                style={{ flex: '0 0 20%', minWidth: '50px' }}
+              >
+                <img
+                  className="h-40 md:h-[25vh] w-full rounded-tl-lg rounded-tr-lg"
+                  src={nft.tokenURI}
+                  alt={fetch(nft.tokenURI).then(response => console.log(response.json()))}
+                />
+
+
+                <h2 className="font-bold text-xl md:text-2xl">{nft.Name}</h2>
+                <div className="flex flex-row justify-center space-x-4">
+                  <p>{nft.price} ETH</p>
+                  <p>{`${nft.to.slice(0, 5)}...${nft.to.slice(-5)}`}</p>
+                </div>
+                <div
+                  className={`bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white ${nft.Type === "List" ? 'hover:cursor-pointer' : ''}`}
+                  onClick={() => nft.price === 0 && setShowAmountCard(nft.Name)}
+                >
+                  <p className="py-3 text-2xl">List</p>
+                </div>
+                {nft.price === 0 && showAmountCard === nft.name && (
+                  <div ref={popupRef} className="amount-popup fixed top-0 left-0 flex justify-center items-center w-full h-full backdrop-blur-sm">
+                    <div className="bg-gray-100 p-4 rounded-lg">
+                      <div className='mb-5 flex flex-row justify-end'>
+                        <button
+                          className='text-xl py-1 px-2 rounded-lg hover:bg-gray-300'
+                          onClick={() => setShowAmountCard(null)}
+                        >
+                          &#10005;
+                        </button>
+                      </div>
+                      <div className='flex flex-row'>
+                        <p className='text-md md:text-lg py-1 px-2 md:py-2 md:px-5 rounded-tl-lg rounded-bl-lg text-black bg-gray-500 bg-opacity-80'>Enter Amount</p>
+                        <input className='py-1 px-2 w-[110px] md:py-2 md:px-3 md:w-[210px] rounded-tr-lg bg-gray-300 rounded-br-lg bg-white bg-opacity-60' type='text' />
+                      </div>
+                      <button className='mt-5 py-3 px-8 bg-gray-200 hover:bg-gray-400 text-black font-[1.5rem] rounded-lg'>
+                        List
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Collection;
