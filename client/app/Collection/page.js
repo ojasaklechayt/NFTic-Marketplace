@@ -8,10 +8,11 @@ import client from '../../apollo-client';
 
 const Collection = () => {
   const [showListed, setShowListed] = useState(false);
-  const [showAmountCard, setShowAmountCard] = useState(null);
+  const [showAmountCardMap, setShowAmountCardMap] = useState({});
   const popupRef = useRef();
   const [ethereumAddress, setEthereumAddress] = useState(null);
-  const [apiData, setApiData] = useState([]); // State variable to hold API data
+  const [datas, setDatas] = useState([]);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     async function fetchEthereumAddress() {
@@ -47,23 +48,38 @@ const Collection = () => {
   const nftTransfers = data.nfttransfers;
   console.log(nftTransfers);
 
-  // Function to fetch data from the API and update 'apiData' state
-  const handlePopupClick = async () => {
-    try {
-      // Make an API request using a library like Axios
-      const response = await fetch('your_api_endpoint_here');
-      if (!response.ok) {
-        throw new Error('Failed to fetch data from the API');
-      }
-      const data = await response.json();
-      console.log(data);
-      // Update the 'apiData' state with the fetched data
-      setApiData(data);
+  const GivePrice = async (nft) => {
+    // Set the showAmountCardMap state to true for the specific card
+    setShowAmountCardMap((prevMap) => ({
+      ...prevMap,
+      [nft.id]: true,
+    }));
 
-    } catch (error) {
-      console.error('Error fetching data from the API:', error.message);
-    }
-  };
+    // Get the input value if inputRef.current is defined
+    const inputValue = inputRef.current ? inputRef.current.value : '';
+
+    // Create a new data object with the updated value for the specific card
+    const updatedData = { id: nft.id, value: inputValue };
+
+    // Update the datas state by replacing the specific card's data or adding it if it doesn't exist
+    setDatas((prevData) => {
+      const existingIndex = prevData.findIndex((item) => item.id === nft.id);
+
+      if (existingIndex !== -1) {
+        // Replace the existing card's data
+        prevData[existingIndex] = updatedData;
+        return [...prevData]; // Return a new array to trigger a state update
+      } else {
+        // Add the new card's data to the existing data
+        return [...prevData, updatedData];
+      }
+    });
+
+    // Log the updated datas and showAmountCardMap
+    console.log(datas);
+    console.log(showAmountCardMap);
+  }
+
 
   return (
     <div>
@@ -99,7 +115,6 @@ const Collection = () => {
                   alt={fetch(nft.tokenURI).then(response => console.log(response.json()))}
                 />
 
-
                 <h2 className="font-bold text-xl md:text-2xl">{nft.Name}</h2>
                 <div className="flex flex-row justify-center space-x-4">
                   <p>{nft.price} ETH</p>
@@ -107,28 +122,36 @@ const Collection = () => {
                 </div>
                 <div
                   className={`bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white ${nft.Type === "List" ? 'hover:cursor-pointer' : ''}`}
-                  onClick={() => nft.price === 0 && setShowAmountCard(nft.Name)}
+                  onClick={() => GivePrice(nft)}
                 >
                   <p className="py-3 text-2xl">List</p>
                 </div>
-                {nft.price === 0 && showAmountCard === nft.name && (
+                {showAmountCardMap[nft.id] === true && (
                   <div ref={popupRef} className="amount-popup fixed top-0 left-0 flex justify-center items-center w-full h-full backdrop-blur-sm">
                     <div className="bg-gray-100 p-4 rounded-lg">
                       <div className='mb-5 flex flex-row justify-end'>
                         <button
                           className='text-xl py-1 px-2 rounded-lg hover:bg-gray-300'
-                          onClick={() => setShowAmountCard(null)}
+                          onClick={() => {
+                            // Create a copy of the showAmountCardMap and set the specific card's state to false
+                            setShowAmountCardMap((prevMap) => ({
+                              ...prevMap,
+                              [nft.id]: false,
+                            }));
+                          }}
                         >
                           &#10005;
                         </button>
                       </div>
-                      <div className='flex flex-row'>
-                        <p className='text-md md:text-lg py-1 px-2 md:py-2 md:px-5 rounded-tl-lg rounded-bl-lg text-black bg-gray-500 bg-opacity-80'>Enter Amount</p>
-                        <input className='py-1 px-2 w-[110px] md:py-2 md:px-3 md:w-[210px] rounded-tr-lg bg-gray-300 rounded-br-lg bg-white bg-opacity-60' type='text' />
+                      <div>
+                        <div className='flex flex-row'>
+                          <p className='text-md md:text-lg py-1 px-2 md:py-2 md:px-5 rounded-tl-lg rounded-bl-lg text-black bg-gray-500 bg-opacity-80'>Enter Amount</p>
+                          <input className='py-1 px-2 w-[110px] md:py-2 md:px-3 md:w-[210px] rounded-tr-lg bg-gray-300 rounded-br-lg bg-white bg-opacity-60' type='text' ref={inputRef} />
+                        </div>
+                        <button className='mt-5 py-3 px-8 bg-gray-200 hover:bg-gray-400 text-black font-[1.5rem] rounded-lg' onClick={() => GivePrice(nft)}> {/* Pass 'nft' data */}
+                          List
+                        </button>
                       </div>
-                      <button className='mt-5 py-3 px-8 bg-gray-200 hover:bg-gray-400 text-black font-[1.5rem] rounded-lg'>
-                        List
-                      </button>
                     </div>
                   </div>
                 )}
