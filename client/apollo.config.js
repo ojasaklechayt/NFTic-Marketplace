@@ -1,7 +1,9 @@
 module.exports = {
     client: {
-        name: "NFTMarketplace",
-        includes: ['./imports/**/*.js'],
-        localSchemaFile: "./schema.graphql"
+        includes: ['./*.graphql'],
+        service: {
+            name: 'Schema',
+            localSchemaFile: __dirname + 'schema.graphql',
+        },
     },
 };

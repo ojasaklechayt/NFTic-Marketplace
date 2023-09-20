@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Web3Modal from "web3modal";
 import * as eth from "ethers";
 import { NFTStorage, Blob } from "nft.storage";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import { abi, address, nftstoract } from './utils'
 import mime from 'mime'
 
@@ -113,6 +113,21 @@ export const BlockchainProvider = ({ children }) => {
         }
     };
 
+    const listNFT = async(id,price) => {
+        try {
+            if(price === 0){
+                window.alert("NFT price can not be 0");
+            }
+            const priceInEth = ethers.utils.parseEther(price.toString());
+            const listing = await contract.listNFT(id,priceInEth);
+            await listing.wait();
+            console.log("Listing Successfully: ", listing.hash);
+            window.alert("Your NFT has been listed for sale successfully")
+        } catch (error) {
+            console.error("Error listing NFTs : ", error);
+            window.alert("Error listing NFT");
+        }
+    }
 
     // const fetchNFTs = async (setLoading) => {
     //     setLoading(true);
@@ -150,6 +165,6 @@ export const BlockchainProvider = ({ children }) => {
     //     checkIfWalletIsConnect();
     // }, []);
     return (
-        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT, connectWallet, mintNFT, currentAccount, mintingNFT, setMintingNFT }}>{children}</BlockchainConfig.Provider>
+        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT, connectWallet, mintNFT, currentAccount, mintingNFT, setMintingNFT, listNFT }}>{children}</BlockchainConfig.Provider>
     );
 };
