@@ -43,7 +43,8 @@ const Collection = () => {
   });
 
   const { data: data2 } = useQuery(LIST_DATA, {
-    client
+    client,
+    variables: { owner: ethereumAddress },
   });
 
   const nftData = selectedButton === "listed" ? data2 : data;

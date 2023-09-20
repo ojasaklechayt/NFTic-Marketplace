@@ -13,8 +13,8 @@ export const GET_DATA = gql`
 `;
 
 export const LIST_DATA = gql`
-  query {
-    nfttransfers(where:{to: "0x81AA8e38F2dBEedD336534E3FC5C0C7D490b1dc3"}) {
+  query ListOwnedNFTs($owner: String!) {
+    nfttransfers(where:{from: $owner , to: "0x81AA8e38F2dBEedD336534E3FC5C0C7D490b1dc3"}) {
       id
       from
       to
