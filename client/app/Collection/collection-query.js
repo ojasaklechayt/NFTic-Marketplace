@@ -23,3 +23,15 @@ export const LIST_DATA = gql`
     }
   }
 `;
+
+export const GET_ALL_DATA = gql`
+  query {
+    nfttransfers(where: {to: "0x81AA8e38F2dBEedD336534E3FC5C0C7D490b1dc3"}) {
+        id
+        from
+        to
+        tokenURI
+        price
+      }
+  }
+`;

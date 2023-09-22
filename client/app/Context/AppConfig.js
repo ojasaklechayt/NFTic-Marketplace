@@ -129,42 +129,29 @@ export const BlockchainProvider = ({ children }) => {
         }
     }
 
-    // const fetchNFTs = async (setLoading) => {
-    //     setLoading(true);
-    //     const data = await contract.fetchMarketItems();
-    //     const items = await Promise.all(
-    //         data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
-    //             const tokenURI = await contract.tokenURI(tokenId);
-    //             const {
-    //                 data: { image, name, description },
-    //             } = await axios.get(tokenURI);
-    //             const price = eth.utils.formatUnits(
-    //                 unformattedPrice.toString(),
-    //                 "ether"
-    //             );
+    const cancelListing = async(id) => {
+        try {
+            const cancel = await contract.cancelListing(id);
+            await cancel.wait();
+            console.log("Cancelling Successful: ", cancel.hash);
+        } catch (error) {
+            console.error("Error Cancelling Listing : ", error);
+            window.alert("Error Cancelling Listing");
+        }
+    }
 
-    //             image.replace("https:ipfs.io", "https://infura-ipfs.io");
-    //             console.log(image);
-
-    //             return {
-    //                 price,
-    //                 tokenId: tokenId.toNumber(),
-    //                 seller,
-    //                 owner,
-    //                 image,
-    //                 name,
-    //                 description,
-    //                 tokenURI,
-    //             };
-    //         })
-    //     );
-    //     return items;
-    // };
-
-    // useEffect(() => {
-    //     checkIfWalletIsConnect();
-    // }, []);
+    const buyingNFT = async(id, price) => {
+        try {
+            const Price = ethers.utils.formatEther(price);
+            const buying = await contract.buyNFT(id, {value: ethers.utils.parseEther(Price)});
+            await buying.wait();
+            console.log("Bought Successfully: ", buying.hash);
+        } catch (error) {
+            console.error("Error Buying NFT: ", error);
+            window.alert("Error Buying NFT");
+        }
+    }
     return (
-        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT, connectWallet, mintNFT, currentAccount, mintingNFT, setMintingNFT, listNFT }}>{children}</BlockchainConfig.Provider>
+        <BlockchainConfig.Provider value={{ uploadToIPFS, createNFT, connectWallet, mintNFT, currentAccount, mintingNFT, setMintingNFT, listNFT, cancelListing, buyingNFT }}>{children}</BlockchainConfig.Provider>
     );
 };

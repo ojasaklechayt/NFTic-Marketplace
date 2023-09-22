@@ -5,7 +5,6 @@ import { ethers } from 'ethers';
 import { useQuery } from '@apollo/react-hooks';
 import { GET_DATA, LIST_DATA } from './collection-query';
 import client from '../../apollo-client';
-import axios from "axios";
 import { BlockchainConfig } from '../Context/AppConfig';
 
 const Collection = () => {
@@ -15,7 +14,7 @@ const Collection = () => {
   const [ethereumAddress, setEthereumAddress] = useState(null);
   const [datas, setDatas] = useState([]);
   const inputRef = useRef(null);
-  const { listNFT } = useContext(BlockchainConfig);
+  const { listNFT, cancelListing } = useContext(BlockchainConfig);
 
   useEffect(() => {
     async function fetchEthereumAddress() {
@@ -41,14 +40,43 @@ const Collection = () => {
     client,
     variables: { owner: ethereumAddress },
   });
-
+  
   const { data: data2 } = useQuery(LIST_DATA, {
     client,
     variables: { owner: ethereumAddress },
   });
 
+  if (loading) {
+    return <div class="flex flex-col items-center justify-center h-screen">
+      <div class="mb-6">
+        <div class="text-center text-2xl mt-2">
+          <p class="animate-blink inline-block">Loading<span class="animate-dots"></span></p>
+        </div>
+      </div>
+      <div class="text-center text-xs md:text-base">
+        <p>What did the crypto enthusiast say when asked about their love life?</p>
+        <p>"I'm HODLing out for the right one!"</p>
+      </div>
+    </div>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+  
+
   const nftData = selectedButton === "listed" ? data2 : data;
   const nftTransfers = nftData?.nfttransfers || [];
+
+  const CancelListingFunc = async (id) => {
+    try {
+      await cancelListing(id);
+      window.alert("NFT has been Unlisted successfully!!");
+    } catch (error) {
+      console.error("Error With Cancelling: ", error);
+      window.alert("Error With Cancelling");
+    }
+  }
 
   const GivePrice = async (nft) => {
     // Get the input value if inputRef.current is defined
@@ -110,8 +138,8 @@ const Collection = () => {
 
         <div className="flex flex-col justify-center mt-10 mb-10">
           {nftTransfers.length === 0 && (
-            <div className="absolute pl-[35%] md:pl-[32%] lg:pl-[38%] pt-[5%]">
-              <p>Oopsie!! No NFTs Listed.</p>
+            <div className="absolute pl-[35%] md:pl-[32%] lg:pl-[40%] pt-[5%]">
+              <p>Oopsie!! No NFTs to display or Loading</p>
             </div>
           )}
           {nftTransfers.length > 0 && (
@@ -128,13 +156,11 @@ const Collection = () => {
                     />
                     <h2 className="font-bold text-xl md:text-2xl">{`NFT#${nft.id}`}</h2>
                     <div className="flex flex-row justify-center space-x-4">
-                      <p>{nft.price / 1000000000000000000} ETH</p>
-                      <p>{nft.price !== '0' ? `${nft.to.slice(0, 5)}...${nft.to.slice(-5)}` : `${nft.from.slice(0, 5)}...${nft.from.slice(-5)}`}</p>
+                      <p>{ethers.utils.formatEther(nft.price)} ETH</p>
+                      <p>{ethers.utils.formatEther(nft.price) !== '0' ? `${nft.to.slice(0, 5)}...${nft.to.slice(-5)}` : `${nft.from.slice(0, 5)}...${nft.from.slice(-5)}`}</p>
                     </div>
                     {selectedButton === "listed" ? <div
-                      className={"bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white hover:cursor-pointer"}
-
-                    >
+                      className={"bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white hover:cursor-pointer"} onClick={() => CancelListingFunc(nft.id)}>
                       <p className="py-3 text-2xl">Unlisted</p>
                     </div> : <div
                       className={"bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white hover:cursor-pointer"}

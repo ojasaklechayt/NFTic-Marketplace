@@ -1,56 +1,11 @@
-import React from 'react'
-import Navbar from '../navbar'
-
-const Data = {
-  card1: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-  card2: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-  card3: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-  card4: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-  card5: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-  card6: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-  card7: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-  card8: {
-    Image: "https://s3-alpha-sig.figma.com/img/a702/d67c/ee62c2470d384a4abee2a53cdf676572?Expires=1692576000&Signature=nylK-ZGeO~EfrFg7n6f3bPHz0WandpTwM2-8YYyI-T9oqJlKIiD9IKM05uXJjMUTcy8s5s9eWJ5Fjik53rcGf3LwmqdSohe6pR572VSBAZnBmwrWMZEAoQDJ7dsO2E6UUO0m3Reisw~xMaMcGY17Z5IvClmirVQv0Z5mUqahXMNT~sEMc5uJqDLc~x7jOPKIRu44C47tBc5SuVdNEZujg~soF4Cqm9Gb1uFswA71KBsqCdw1KgG2w4b3-vLbe4aCYRGGM76Nrfigav6~sXkT9GG22soZsuAkFMaYRLw6bSyaPu7s1lj-ioWxA5rdWvx-0pcDHDmR~5GcsITlY8PcxA__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    Name: "Nyan Cat",
-    Price: 0.05,
-    Address: "0xA1B...A42"
-  },
-}
+'use client'
+import React, { useContext } from 'react';
+import Navbar from '../navbar';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_ALL_DATA } from '../Collection/collection-query';
+import client from '../../apollo-client';
+import { BlockchainConfig } from '../Context/AppConfig';
+import { ethers } from 'ethers';
 
 const chunkData = (data, size) => {
   const chunks = [];
@@ -61,7 +16,43 @@ const chunkData = (data, size) => {
 };
 
 const Explore = () => {
-  const rowData = chunkData(Object.keys(Data).map((key) => Data[key]), 4);
+  // Fetch NFT data using GraphQL query
+  const { buyingNFT } = useContext(BlockchainConfig);
+  const { loading, error, data } = useQuery(GET_ALL_DATA, {
+    client,
+  });
+
+  if (loading) {
+    return <div class="flex flex-col items-center justify-center h-screen">
+      <div class="mb-6">
+        <div class="text-center text-2xl mt-2">
+          <p class="animate-blink inline-block">Loading<span class="animate-dots"></span></p>
+        </div>
+      </div>
+      <div class="text-center text-xs md:text-base">
+        <p>Why was the Ethereum developer always calm during network congestion?</p>
+        <p>Because they knew patience is a gas fee virtue!</p>
+      </div>
+    </div>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  const nftData = data.nfttransfers || [];
+
+  const rowData = chunkData(nftData, 4);
+
+  const BuyNFT = async (id, price) => {
+    try {
+      await buyingNFT(id, price);
+      window.alert("NFT has been brought successfully!!");
+    } catch (error) {
+      console.error("Error With Buying: ", error);
+      window.alert("Error With Buying");
+    }
+  }
 
   return (
     <div>
@@ -70,22 +61,33 @@ const Explore = () => {
         <h1 className="text-3xl md:text-6xl text-center mt-20">Explore</h1>
         <div className="flex flex-wrap justify-center mt-10 mb-10">
           {rowData.map((row, rowIndex) => (
-            <div key={rowIndex} className="flex flex-col md:flex-row mb-4 justify-center space-x-6 md:space-x-4">
+            <div
+              key={rowIndex}
+              className="w-[75vw] md:w-[70vw] md:h-[40vh] lg:w-[80vw] md:px-1 flex flex-col md:flex-row mb-4 justify-center md:space-x-4"
+            >
               {row.map((card, cardIndex) => (
                 <div
                   key={cardIndex}
-                  className="bg-white text-black text-center flex flex-col space-y-3 md:w-1/2 lg:w-1/4 rounded-lg mx-2 my-2 md:mx-0 md:my-0">
+                  className="bg-white text-black text-center flex flex-col space-y-3 md:w-1/3 lg:w-1/4 rounded-lg mx-2 my-2 md:mx-0 md:my-0"
+                >
                   <img
-                    className="h-40 md:h-[25vh] w-full rounded-tl-lg rounded-tr-lg"
-                    src={card.Image}
-                    alt="Image"
+                    className="w-full h-40 md:h-[25vh] w-full rounded-tl-lg rounded-tr-lg"
+                    src={"https://infura-ipfs.io/" + card.tokenURI.slice(16)} // Use tokenURI from GraphQL data
+                    alt={"https://infura-ipfs.io/" + card.tokenURI.slice(16)}
                   />
-                  <h2 className="font-bold text-xl md:text-2xl">{card.Name}</h2>
+                  <h2 className="font-bold text-xl md:text-2xl">{`NFT#${card.id}`}</h2>
                   <div className="flex flex-row justify-center space-x-4">
-                    <p>{card.Price} ETH</p>
-                    <p>{card.Address}</p>
+                    <p>{ethers.utils.formatEther(card.price)} ETH</p>
+                    <p>
+                      {ethers.utils.formatEther(card.price) !== '0'
+                        ? `${card.to.slice(0, 5)}...${card.to.slice(-5)}`
+                        : `${card.from.slice(0, 5)}...${card.from.slice(-5)}`}
+                    </p>
                   </div>
-                  <div className="bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white">
+                  <div
+                    className="bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white"
+                    onClick={() => BuyNFT(card.id, card.price)} // Replace BuyNFT with your buy function
+                  >
                     <p className="py-3 text-2xl">Buy</p>
                   </div>
                 </div>
