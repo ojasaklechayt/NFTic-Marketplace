@@ -36,8 +36,11 @@ const Create = () => {
         }
 
         try {
+            console.log(selectedImage);
+            const blob = await fetch(selectedImage).then((response) => response.blob());
+            console.log(blob);
             setMintingNFT("Minting");
-            await createNFT({ name: nftName }, selectedImage);
+            await createNFT({ name: nftName }, blob);
             setMintingNFT("Minted");
         } catch (error) {
             console.error("Error creating NFT:", error);

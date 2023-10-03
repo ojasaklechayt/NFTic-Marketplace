@@ -8,14 +8,14 @@ import client from '../../apollo-client';
 import { BlockchainConfig } from '../Context/AppConfig';
 
 const Collection = () => {
-  const [selectedButton, setSelectedButton] = useState("unlisted");
+  const [selectedButton, setSelectedButton] = useState('unlisted');
   const [showAmountCardMap, setShowAmountCardMap] = useState(null);
   const popupRef = useRef();
   const [ethereumAddress, setEthereumAddress] = useState(null);
   const [datas, setDatas] = useState([]);
   const inputRef = useRef(null);
   const { listNFT, cancelListing } = useContext(BlockchainConfig);
-
+  const [nftDataforcard, setnftDataforcard] = useState([]);
   useEffect(() => {
     async function fetchEthereumAddress() {
       try {
@@ -40,45 +40,67 @@ const Collection = () => {
     client,
     variables: { owner: ethereumAddress },
   });
-  
+
   const { data: data2 } = useQuery(LIST_DATA, {
     client,
     variables: { owner: ethereumAddress },
   });
 
+  const nftData = selectedButton === 'listed' ? data2 : data;
+  const nftTransfers = nftData?.nfttransfers || [];
+
+  useEffect(() => {
+    nftTransfers.forEach((nft) => {
+      fetch(nft.tokenURI)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data) {
+            console.log("Raw Data: " + typeof data);
+            setnftDataforcard((prevData) => [...prevData, data])
+          };
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    });
+
+  }, [nftTransfers]);
+
+  if (nftDataforcard.length >= 4) {
+    console.log("Refined Sexy Data: " + typeof nftDataforcard[3]);
+  }
+
   if (loading) {
-    return <div class="flex flex-col items-center justify-center h-screen">
-      <div class="mb-6">
-        <div class="text-center text-2xl mt-2">
-          <p class="animate-blink inline-block">Loading<span class="animate-dots"></span></p>
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="mb-6">
+          <div className="text-center text-2xl mt-2">
+            <p className="animate-blink inline-block">Loading<span className="animate-dots"></span></p>
+          </div>
+        </div>
+        <div className="text-center text-xs md:text-base">
+          <p>What did the crypto enthusiast say when asked about their love life?</p>
+          <p>"I'm HODLing out for the right one!"</p>
         </div>
       </div>
-      <div class="text-center text-xs md:text-base">
-        <p>What did the crypto enthusiast say when asked about their love life?</p>
-        <p>"I'm HODLing out for the right one!"</p>
-      </div>
-    </div>;
+    );
   }
 
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-  
 
-  const nftData = selectedButton === "listed" ? data2 : data;
-  const nftTransfers = nftData?.nfttransfers || [];
-
-  const CancelListingFunc = async (id) => {
+  const cancelListingFunc = async (id) => {
     try {
       await cancelListing(id);
-      window.alert("NFT has been Unlisted successfully!!");
+      window.alert('NFT has been Unlisted successfully!!');
     } catch (error) {
-      console.error("Error With Cancelling: ", error);
-      window.alert("Error With Cancelling");
+      console.error('Error With Cancelling: ', error);
+      window.alert('Error With Cancelling');
     }
-  }
+  };
 
-  const GivePrice = async (nft) => {
+  const givePrice = async (nft) => {
     // Get the input value if inputRef.current is defined
     const inputValue = inputRef.current ? inputRef.current.value : '';
 
@@ -123,14 +145,14 @@ const Collection = () => {
         <h1 className="text-3xl md:text-6xl text-center mt-20">Your Collection</h1>
         <div className="flex flex-row justify-center mt-5 space-x-5">
           <button
-            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === "unlisted" ? 'bg-gray-500' : ''}`}
-            onClick={() => setSelectedButton("unlisted")}
+            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === 'unlisted' ? 'bg-gray-500' : ''}`}
+            onClick={() => setSelectedButton('unlisted')}
           >
             <p className="text-center lg:text-left">Unlisted NFTs</p>
           </button>
           <button
-            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === "listed" ? 'bg-gray-500' : ''}`}
-            onClick={() => setSelectedButton("listed")}
+            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === 'listed' ? 'bg-gray-500' : ''}`}
+            onClick={() => setSelectedButton('listed')}
           >
             <p className="text-center lg:text-left">Listed NFTs</p>
           </button>
@@ -144,30 +166,38 @@ const Collection = () => {
           )}
           {nftTransfers.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 px-10 md:px-20">
-              {nftTransfers.map((nft) => (
+              {nftTransfers.map((nft) =>
+              (
                 <div key={nft.id} className="flex flex-row justify-center items-center mb-5 rounded-lg">
                   <div
                     className={`bg-white text-black text-center flex flex-col w-[80vw] md:w-[20vw] space-y-3 rounded-lg`}
                   >
                     <img
                       className="h-40 md:h-[25vh] w-full rounded-tl-lg rounded-tr-lg"
-                      src={"https://infura-ipfs.io/" + nft.tokenURI.slice(16)}
-                      alt={"https://infura-ipfs.io/" + nft.tokenURI.slice(16)}
+                      src={nft}
+                      alt={"Image"}
                     />
+                    {/* {console.log(nftDataforcard[0])} */}
                     <h2 className="font-bold text-xl md:text-2xl">{`NFT#${nft.id}`}</h2>
                     <div className="flex flex-row justify-center space-x-4">
                       <p>{ethers.utils.formatEther(nft.price)} ETH</p>
                       <p>{ethers.utils.formatEther(nft.price) !== '0' ? `${nft.to.slice(0, 5)}...${nft.to.slice(-5)}` : `${nft.from.slice(0, 5)}...${nft.from.slice(-5)}`}</p>
                     </div>
-                    {selectedButton === "listed" ? <div
-                      className={"bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white hover:cursor-pointer"} onClick={() => CancelListingFunc(nft.id)}>
-                      <p className="py-3 text-2xl">Unlisted</p>
-                    </div> : <div
-                      className={"bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white hover:cursor-pointer"}
-                      onClick={() => setShowAmountCardMap(nft.id)}
-                    >
-                      <p className="py-3 text-2xl">List</p>
-                    </div>}
+                    {selectedButton === 'listed' ? (
+                      <div
+                        className={"bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white hover:cursor-pointer"}
+                        onClick={() => cancelListingFunc(nft.id)}
+                      >
+                        <p className="py-3 text-2xl">Unlisted</p>
+                      </div>
+                    ) : (
+                      <div
+                        className={"bg-gray-400 flex flex-row justify-center items-center rounded-bl-lg rounded-br-lg cursor-pointer hover:bg-gray-600 hover:text-white hover:cursor-pointer"}
+                        onClick={() => setShowAmountCardMap(nft.id)}
+                      >
+                        <p className="py-3 text-2xl">List</p>
+                      </div>
+                    )}
                     {showAmountCardMap === nft.id && (
                       <div
                         ref={popupRef}
@@ -185,7 +215,7 @@ const Collection = () => {
                                 ref={inputRef}
                               />
                             </div>
-                            <button className="mt-5 py-3 px-8 bg-gray-200 hover:bg-gray-400 text-black font-[1.5rem] rounded-lg" onClick={() => GivePrice(nft)}>
+                            <button className="mt-5 py-3 px-8 bg-gray-200 hover:bg-gray-400 text-black font-[1.5rem] rounded-lg" onClick={() => givePrice(nft)}>
                               List
                             </button>
                           </div>

@@ -62,6 +62,7 @@ export const BlockchainProvider = ({ children }) => {
                 description: "ABC",
                 image: newFile,
             });
+            console.log(metadata);
             if (metadata && metadata.data && metadata.data.image instanceof URL) {
                 const imageUrl = metadata.data.image.href;
                 return imageUrl;
