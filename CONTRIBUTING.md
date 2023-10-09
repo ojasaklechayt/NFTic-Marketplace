@@ -42,8 +42,12 @@ Before you start contributing to NFTic-Marketplace, make sure you have the neces
 
 4. **Install dependencies:**
 
-   ```bash
-   npm install
+   ```contracts
+   npm install 
+   ```
+   
+   ```client
+    npm install --force
    ```
 
 ### Setting Up Environment Variables
@@ -59,8 +63,19 @@ To configure NFTic-Marketplace, you need to set up environment variables. We use
 Here's an example of how to format your `.env` file:
 
 ```env
-# PRIVATE KEY
-PRIVATE_KEY='your-private-key'
+#Client File ENV Values
+
+WEB3PRODUCTID="your-secret"
+NFTSTORAGE="your-secret"
+ADDRESS_DEPLOYED_TO="your-secret"
+SEP_URL="your-secret"
+APOLLO_KEY="your-secret"
+ABI="your-secret"
+
+#Contract File ENV Values
+
+SEP_URL="your-secret"
+PRIVATE_KEY="your-secret"
 
 ```
 
