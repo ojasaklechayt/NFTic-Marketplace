@@ -25,6 +25,7 @@ const Explore = () => {
           const response = await fetch(nft.tokenURI);
           if (response.ok) {
             const data = await response.json();
+            const NFtID = nft.id;
             const fromAddress = nft.from;
             const price = nft.price;
             const toAddress = nft.to;
@@ -35,6 +36,7 @@ const Explore = () => {
             dataObject.from = fromAddress;
             dataObject.to = toAddress;
             dataObject.price = price;
+            dataObject.id = NFtID;
             nftDataArray.push(dataObject);
           } else {
             console.error('Error fetching data:', response.statusText);
@@ -49,7 +51,7 @@ const Explore = () => {
     fetchNFTData();
   }, [nftTransfers]);
 
-  console.log(nftDataforcard);
+  // console.log(nftDataforcard);
 
   if (loading) {
     return (
@@ -73,11 +75,17 @@ const Explore = () => {
 
   const BuyNFT = async (id, price) => {
     try {
-      await buyingNFT(id, price);
+      const correctedValue = price/1e18;
+      const correctedValueString = correctedValue.toString();
+      const parsedValue = ethers.utils.parseEther(correctedValueString);
+      // console.log(parsedValue);
+      // console.log(correctedValueString);
+      await buyingNFT(id, parsedValue);
+      // console.log(id);
       window.alert("NFT has been brought successfully!!");
     } catch (error) {
       console.error("Error With Buying: ", error);
-      window.alert("Error With Buying");
+      // window.alert("Error With Buying");
     }
   }
 

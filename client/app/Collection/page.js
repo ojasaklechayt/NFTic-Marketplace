@@ -61,12 +61,14 @@ const Collection = () => {
             const price = nft.price;
             const toAddress = nft.to;
             const imageURL = data.image;
+            const nftId = nft.id;
             const imageData = { ...data, image: imageURL };
             const jsonString = Object.values(imageData).join('');
             const dataObject = JSON.parse(jsonString);
             dataObject.from = fromAddress;
             dataObject.to = toAddress;
             dataObject.price = price;
+            dataObject.id = nftId;
             nftDataArray.push(dataObject);
           } else {
             console.error('Error fetching data:', response.statusText);
@@ -135,7 +137,7 @@ const Collection = () => {
           });
 
           // Log the updated datas
-          console.log(nftDataforcard);
+          // console.log(nftDataforcard);
 
           // Close the popup by resetting showAmountCardMap to null
           setShowAmountCardMap(null);
