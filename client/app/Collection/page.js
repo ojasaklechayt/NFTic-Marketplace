@@ -12,10 +12,10 @@ const Collection = () => {
   const [showAmountCardMap, setShowAmountCardMap] = useState(null);
   const popupRef = useRef();
   const [ethereumAddress, setEthereumAddress] = useState(null);
-  const [datas, setDatas] = useState([]);
+  const [nftDataforcard, setnftDataforcard] = useState([]);
   const inputRef = useRef(null);
   const { listNFT, cancelListing } = useContext(BlockchainConfig);
-  const [nftDataforcard, setnftDataforcard] = useState([]);
+
   useEffect(() => {
     async function fetchEthereumAddress() {
       try {
@@ -50,25 +50,36 @@ const Collection = () => {
   const nftTransfers = nftData?.nfttransfers || [];
 
   useEffect(() => {
-    nftTransfers.forEach((nft) => {
-      fetch(nft.tokenURI)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            console.log("Raw Data: " + typeof data);
-            setnftDataforcard((prevData) => [...prevData, data])
-          };
-        })
-        .catch((error) => {
+    async function fetchNFTData() {
+      const nftDataArray = [];
+      for (const nft of nftTransfers) {
+        try {
+          const response = await fetch(nft.tokenURI);
+          if (response.ok) {
+            const data = await response.json();
+            const fromAddress = nft.from;
+            const price = nft.price;
+            const toAddress = nft.to;
+            const imageURL = data.image;
+            const imageData = { ...data, image: imageURL };
+            const jsonString = Object.values(imageData).join('');
+            const dataObject = JSON.parse(jsonString);
+            dataObject.from = fromAddress;
+            dataObject.to = toAddress;
+            dataObject.price = price;
+            nftDataArray.push(dataObject);
+          } else {
+            console.error('Error fetching data:', response.statusText);
+          }
+        } catch (error) {
           console.error('Error fetching data:', error);
-        });
-    });
+        }
+      }
+      setnftDataforcard(nftDataArray);
+    }
 
+    fetchNFTData();
   }, [nftTransfers]);
-
-  if (nftDataforcard.length >= 4) {
-    console.log("Refined Sexy Data: " + typeof nftDataforcard[3]);
-  }
 
   if (loading) {
     return (
@@ -105,38 +116,43 @@ const Collection = () => {
     const inputValue = inputRef.current ? inputRef.current.value : '';
 
     // Validate the input (e.g., check if it's a valid number)
+    if (typeof inputValue === 'string' && inputValue.trim() !== '') {
+      try {
+        const parsedValue = ethers.utils.parseEther(inputValue); // Convert to BigNumber
+        if (parsedValue.gt(0)) {
+          // Assuming input validation is successful, call listNFT once
+          await listNFT(nft.id, inputValue); // Convert BigNumber to string
 
-    try {
-      // Assuming input validation is successful, call listNFT once
-      await listNFT(nft.id, inputValue);
+          // Create a new data object with the updated value for the specific card
+          const updatedData = { id: nft.id, value: inputValue }; // Convert BigNumber to string
 
-      // Create a new data object with the updated value for the specific card
-      const updatedData = { id: nft.id, value: inputValue };
+          // Update the datas state by replacing the specific card's data or adding it if it doesn't exist
+          setnftDataforcard((prevData) => {
+            const updatedDataArray = prevData.map((item) =>
+              item.id === nft.id ? updatedData : item
+            );
+            return updatedDataArray;
+          });
 
-      // Update the datas state by replacing the specific card's data or adding it if it doesn't exist
-      setDatas((prevData) => {
-        const existingIndex = prevData.findIndex((item) => item.id === nft.id);
+          // Log the updated datas
+          console.log(nftDataforcard);
 
-        if (existingIndex !== -1) {
-          // Replace the existing card's data
-          prevData[existingIndex] = updatedData;
-          return [...prevData]; // Return a new array to trigger a state update
+          // Close the popup by resetting showAmountCardMap to null
+          setShowAmountCardMap(null);
         } else {
-          // Add the new card's data to the existing data
-          return [...prevData, updatedData];
+          // Handle the case where the input value is not greater than zero
+          console.error('Input value must be greater than zero.');
         }
-      });
-
-      // Log the updated datas
-      console.log(datas);
-
-      // Close the popup by resetting showAmountCardMap to null
-      setShowAmountCardMap(null);
-    } catch (error) {
-      // Handle errors, e.g., display an error message to the user
-      console.error('Error listing NFT:', error);
+      } catch (error) {
+        // Handle errors, e.g., display an error message to the user
+        console.error('Error listing NFT:', error);
+      }
+    } else {
+      // Handle the case where the input value is empty or not a valid string
+      console.error('Invalid input value.');
     }
   };
+
 
   return (
     <div>
@@ -145,13 +161,15 @@ const Collection = () => {
         <h1 className="text-3xl md:text-6xl text-center mt-20">Your Collection</h1>
         <div className="flex flex-row justify-center mt-5 space-x-5">
           <button
-            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === 'unlisted' ? 'bg-gray-500' : ''}`}
+            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === 'unlisted' ? 'bg-gray-500' : ''
+              }`}
             onClick={() => setSelectedButton('unlisted')}
           >
             <p className="text-center lg:text-left">Unlisted NFTs</p>
           </button>
           <button
-            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === 'listed' ? 'bg-gray-500' : ''}`}
+            className={`w-40 lg:w-auto bg-gray-400 p-2 px-6 lg:px-10 rounded-full lg:rounded-[25px] hover:bg-gray-500 ${selectedButton === 'listed' ? 'bg-gray-500' : ''
+              }`}
             onClick={() => setSelectedButton('listed')}
           >
             <p className="text-center lg:text-left">Listed NFTs</p>
@@ -159,29 +177,31 @@ const Collection = () => {
         </div>
 
         <div className="flex flex-col justify-center mt-10 mb-10">
-          {nftTransfers.length === 0 && (
+          {nftDataforcard.length === 0 && (
             <div className="absolute pl-[35%] md:pl-[32%] lg:pl-[40%] pt-[5%]">
               <p>Oopsie!! No NFTs to display or Loading</p>
             </div>
           )}
-          {nftTransfers.length > 0 && (
+          {nftDataforcard.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 px-10 md:px-20">
-              {nftTransfers.map((nft) =>
-              (
+              {nftDataforcard.map((nft) => (
                 <div key={nft.id} className="flex flex-row justify-center items-center mb-5 rounded-lg">
                   <div
                     className={`bg-white text-black text-center flex flex-col w-[80vw] md:w-[20vw] space-y-3 rounded-lg`}
                   >
                     <img
                       className="h-40 md:h-[25vh] w-full rounded-tl-lg rounded-tr-lg"
-                      src={nft}
+                      src={nft.image}
                       alt={"Image"}
                     />
-                    {/* {console.log(nftDataforcard[0])} */}
-                    <h2 className="font-bold text-xl md:text-2xl">{`NFT#${nft.id}`}</h2>
+                    <h2 className="font-bold text-xl md:text-2xl">{nft.name}</h2>
                     <div className="flex flex-row justify-center space-x-4">
-                      <p>{ethers.utils.formatEther(nft.price)} ETH</p>
-                      <p>{ethers.utils.formatEther(nft.price) !== '0' ? `${nft.to.slice(0, 5)}...${nft.to.slice(-5)}` : `${nft.from.slice(0, 5)}...${nft.from.slice(-5)}`}</p>
+                      {nft.price !==0 ? <p>{ethers.utils.formatEther(nft.price)} ETH</p> : nft.price}
+                      <p>
+                        {ethers.utils.formatEther(nft.price) !== '0'
+                          ? `${nft.to.slice(0, 5)}...${nft.to.slice(-5)}`
+                          : `${nft.from.slice(0, 5)}...${nft.from.slice(-5)}`}
+                      </p>
                     </div>
                     {selectedButton === 'listed' ? (
                       <div
