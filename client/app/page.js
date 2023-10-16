@@ -14,14 +14,6 @@ export default function Home() {
         </div>
       </div>
       <Navbar router={router} />
-      <div className="relative">
-        <div className="absolute top-[5px] right-0 md:w-[500px] md:h-[500px] w-full h-[300px] md:h-[500px]">
-          <Image src={Image1} />
-        </div>
-        <div className="absolute top-[5px] left-0 md:w-[600px] md:h-[600px] w-full h-[400px] md:h-[600px]">
-          <Image src={Image2} />
-        </div>
-      </div>
       <div className="flex flex-col justify-start items-center poppins h-[746px]">
         <h1 className="text-[1.6rem] md:text-[3rem] text-center mt-20">NFTic<br /> Marketplace</h1>
         <h3 className="text-[1.4rem]">Express your NFT love</h3>
