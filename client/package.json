@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:css": "tailwindcss build input.css -o output.css"
   },
   "dependencies": {
     "@apollo/client": "3.8.3",
