@@ -1,4 +1,3 @@
-'use client'
 import React, { useContext, useState, useEffect } from 'react';
 import Navbar from '../navbar';
 import { useQuery } from '@apollo/react-hooks';
@@ -51,19 +50,35 @@ const Explore = () => {
     fetchNFTData();
   }, [nftTransfers]);
 
+  if (loading) {
+    return (
+      <div class="flex flex-col items-center justify-center h-screen">
+        <div class="mb-6">
+          <div class="text-center text-2xl mt-2">
+            <p class="animate-blink inline-block">Loading<span class="animate-dots"></span></p>
+          </div>
+        </div>
+        <div class="text-center text-xs md:text-base">
+          <p>Why was the Ethereum developer always calm during network congestion?</p>
+          <p>Because they knew patience is a gas fee virtue!</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
   const BuyNFT = async (id, price) => {
     try {
       const correctedValue = price / 1e18;
       const correctedValueString = correctedValue.toString();
       const parsedValue = ethers.utils.parseEther(correctedValueString);
-      // console.log(parsedValue);
-      // console.log(correctedValueString);
       await buyingNFT(id, parsedValue);
-      // console.log(id);
       window.alert('NFT has been bought successfully!!');
     } catch (error) {
       console.error('Error With Buying: ', error);
-      // window.alert('Error With Buying');
     }
   }
 
@@ -75,7 +90,7 @@ const Explore = () => {
         {nftDataforcard.map((row) => (
           <div
             key={row.id}
-            className="w-full md:w-1/2 lg:w-1/3 p-2"
+            className="w-full md:w-[25%] p-2" // Adjusted the width classes here
           >
             <div className="bg-white text-black text-center flex flex-col space-y-3 rounded-lg">
               <img
