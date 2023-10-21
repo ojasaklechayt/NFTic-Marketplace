@@ -1,3 +1,4 @@
+'use client'
 import React, { useContext, useState, useEffect } from 'react';
 import Navbar from '../navbar';
 import { useQuery } from '@apollo/react-hooks';
